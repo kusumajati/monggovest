@@ -5,7 +5,7 @@ const   express     = require('express'),
         mongoose    = require('mongoose'),
         swaggerUi = require('swagger-ui-express'),
         swaggerDoc = require("./swagger.json"),
-        port        = 5000,
+        port        = process.env.PORT || 5000,
         dbConfig    = require('./config/db')
 
 app.use(bodyParser.urlencoded({extended:true}))
