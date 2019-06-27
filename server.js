@@ -25,6 +25,9 @@ app.get("/api/docs",swaggerUi.setup(swaggerDoc))
 app.get('/',(req,res)=>{
     res.send('monggovest homepage')
 })
+//required API
+require('./app/routes/user.routes')(app)
+require('./app/routes/investment.routes')(app)
 
 app.listen(port, ()=>{
     console.log(`you have started the server, listening on port ${port}`)
