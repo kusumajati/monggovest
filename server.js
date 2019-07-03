@@ -28,6 +28,7 @@ app.get('/',(req,res)=>{
 //required API
 require('./app/routes/user.routes')(app)
 require('./app/routes/investment.routes')(app)
+require('./app/routes/bankTransfer.routes')(app)
 
 app.listen(port, ()=>{
     console.log(`you have started the server, listening on port ${port}`)

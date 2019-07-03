@@ -1,5 +1,6 @@
 const mongoose  = require('mongoose')
 
+
 var investmentSchema = new mongoose.Schema({
     nama:{type:String,minlength:4,required:true},
     users:[{type: mongoose.Schema.Types.ObjectId, ref:'User'}],
@@ -18,4 +19,6 @@ var investmentSchema = new mongoose.Schema({
     hargaLot:{type:Number, default:0}
 })
 
-module.exports = mongoose.model('Investment', investmentSchema)
+const investmentModel = mongoose.model('Investment', investmentSchema)
+
+module.exports = investmentModel

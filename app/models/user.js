@@ -1,5 +1,6 @@
 const mongoose  = require('mongoose')
 
+
 var userSchema = new mongoose.Schema({
     namaLengkap: {type:String, minlength:4, required:true},
     password: {type:String, minlength:4, required:true},
@@ -18,5 +19,6 @@ var userSchema = new mongoose.Schema({
         
     
 })
+const userModel = mongoose.model('User', userSchema)
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = userModel

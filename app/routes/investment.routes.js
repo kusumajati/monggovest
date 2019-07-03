@@ -4,4 +4,5 @@ module.exports = app =>{
 
     app.post('/v1/api/investment', auth.auth, investment.investment_create)
     app.get('/v1/api/investment/:id', investment.investment_show)
+    app.get('/allinvestment', investment.allinvestment)
 }
