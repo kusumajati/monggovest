@@ -4,19 +4,13 @@ const bcrypt = require('bcrypt'),
     User = require('../models/user')
 
 exports.create_user = (req, res) => {
-    User.findOne({ email: req.body.email }, (search_err, foundUser) => {
-        if (search_err) {
-            res.status(400).json({
-                message:`error`,
-                success:false,
-                data:search_err
-            })
-        } else if(foundUser) {
+    User.findOne({ email: req.body.email }).then(user => {
+        if (user) {
             res.status(200).json({
-                message:`email ${foundUser.email}has already existed`,
-                success:false
+                message: `email ${user.email}has already existed`,
+                success: false
             })
-        }else{
+        } else {
             User.create({
                 namaLengkap: req.body.namaLengkap,
                 password: bcrypt.hashSync(req.body.password, 10),
@@ -29,61 +23,70 @@ exports.create_user = (req, res) => {
                 penghasilan: '',
                 incomeLow: 0,
                 incomeHigh: 0
-            }, (create_err, user) => {
-                if (create_err) {
+            }).then(newUser=>{
+                newUser.save().then(savedUser=>{
+                    res.status(200).json({
+                        message:'new user created',
+                        success:true,
+                        data: savedUser
+                    })
+                }).catch(saveErr=>{
                     res.status(400).json({
-                        message: 'fail to create user',
-                        success: false,
-                        data: create_err
+                        message:'fail to save new user',
+                        success:false,
+                        data:saveErr
                     })
-                } else {
-                    user.save((save_err, newUser) => {
-                        if (save_err) {
-                            res.status(400).json({
-                                message: 'fail to create user',
-                                success: false,
-                                data: save_err
-                            })
-                        } else {
-                            res.status(200).json({
-                                message: 'new user created',
-                                success: true,
-                                data: newUser
-                            })
-                        }
-                    })
-                }
+                })
+            }).catch(newErr=>{
+                res.status(400).json({
+                    message:'fail to create new user',
+                    success:false,
+                    data:newErr
+                })
             })
         }
+
+    }).catch(err => {
+        res.status(400).json({
+            message:'fail to search user',
+            success:false,
+            data:err
+        })
     })
 }
 
 exports.user_login = (req, res) => {
-    User.findOne({email:req.body.email},(err,user)=>{
-        if(user){
-            bcrypt.compare(req.body.password,user.password,(err,response)=>{
-                if(err){
+    User.findOne({ email: req.body.email }, (err, user) => {
+        if (user) {
+            bcrypt.compare(req.body.password, user.password, (err, response) => {
+                if (err) {
                     res.status(400).json({
-                        message:'something went wrong',
-                        success:false,
-                        data:err
+                        message: 'something went wrong',
+                        success: false,
+                        data: err
                     })
-                }else if(response){
-                    const token = jwt.sign(user.toJSON(),process.env.JWT_KEY,{algorithm: 'HS256'})
+                } else if (response) {
+                    const createToken = {
+                        id: user.id,
+                        email: user.email,
+                        password: user.password
+                    }
+               
+                    const token = jwt.sign(JSON.stringify(createToken), process.env.JWT_KEY, { algorithm: 'HS256' })
                     res.status(200).json({
-                        message:'you are logged in',
-                        success:true,
-                        token:token
+                        message: 'you are logged in',
+                        success: true,
+                        token: token
                     })
-                }else{
+                } else {
                     res.status(400).json({
-                        message:'wrong password',
-                        success:false
+                        message: 'wrong password',
+                        success: false
                     })
                 }
             })
-            
-        }else{
+
+        } else {
             res.status(400).json({
                 message: 'fail to find user',
                 success: false,
@@ -94,7 +97,7 @@ exports.user_login = (req, res) => {
 }
 
 exports.user_show = (req, res) => {
-    User.findOne({ _id: req.decoded._id }, (err, user) => {
+    User.findOne({ _id: req.decoded.id }, (err, user) => {
         if (err) {
             res.status(400).json({
                 message: 'error',
@@ -123,6 +126,31 @@ exports.alluser = (req, res) => {
             message: 'fail',
             success: false,
             data: err
+        })
+    })
+}
+
+exports.user_update = (req, res)=>{
+    User.findByIdAndUpdate(req.decoded.id, {$set:{
+        namaLengkap: req.body.namaLengkap,
+                noIdentitas: req.body.noIdentitas,
+                alamat: req.body.alamat,
+                jenisIdentitas: req.body.jenisIdentitas,
+                provinsi: req.body.provinsi,
+                telepon: req.body.telepon,
+                incomeLow: req.body.incomeLow,
+                incomeHigh: req.body.incomeHigh
+    }}).then(updatedUser=>{
+        res.status(200).json({
+            message:"user updated",
+            success: true,
+            data: updatedUser
+        })
+    }).catch(err=>{
+        res.status(400).json({
+            message:'fail to find and update',
+            success:false,
+            data:err
         })
     })
 }

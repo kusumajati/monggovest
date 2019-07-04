@@ -2,7 +2,7 @@ const Investment = require('../models/investment'),
     User = require('../models/user')
 
 exports.investment_create = (req, res) => {
-    User.findOne({ _id: req.decoded._id }, (err, user) => {
+    User.findOne({ _id: req.decoded.id }, (err, user) => {
         if (user) {
             Investment.create({
                 nama: req.body.nama,
@@ -74,5 +74,68 @@ exports.allinvestment = (req, res) => {
             success: true,
             data: result
         })
+    })
+}
+
+exports.investment_update = (req, res) => {
+    User.findById(req.decoded.id).then(user=>{
+        Investment.findById(req.params.id).populate().exec((invErr, investment)=>{
+            if(invErr){
+                res.status(400).json({
+                    message: 'fail to find user',
+                    success:false,
+                    data:invErr
+                })
+            }else{
+                if(investment.author._id.$oid === user._id.$oid){
+                investment.nama= req.body.nama
+                investment.gambar= req.body.gambar
+                investment.returnLow= req.body.returnLow
+                investment.returnHigh= req.body.returnHigh
+                investment.periodeBagiHasil= req.body.periodeBagiHasil
+                investment.rincian= req.body.rincian
+                investment.ringkasan= req.body.ringkasan      
+                investment.save().then(invSav=>{
+                    res.status(200).json({
+                        message:'updated',
+                        success:true,
+                        data:invSav
+                    })
+                }).catch(savErr=>{
+                    res.status(400).json({
+                        message:'fail to save update',
+                        success:false,
+                        data:savErr
+                    })
+                })  
+                }else{
+                    console.log(typeof investment.author._id)
+                    console.log(typeof user._id)
+                    res.status(200).json({
+                        message: 'investment fail to be updated',
+                        success:false,
+                        data: investment
+                    })
+                }
+            }
+        })
+    }).catch(userErr=>{
+        res.status(400).json({
+            message:'fail to find user',
+            success:false,
+            data:userErr
+        })
+    })
+}
+
+exports.investment_delete = (req,res)=>{
+    Investment.findByIdAndRemove(req.params.id, (err)=>{
+        if(err){
+            res.status(400).json({
+                message:'fail to remove',
+                success:false,
+                data:err
+            })
+        }
     })
 }
