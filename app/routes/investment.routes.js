@@ -6,4 +6,5 @@ module.exports = app =>{
     app.get('/v1/api/investment/:id', investment.investment_show)
     app.get('/allinvestment', investment.allinvestment)
     app.put('/v1/api/investment/:id', auth.auth, investment.investment_update)
+    app.get('/v1/api/investment_terbaru', investment.investment_terbaru)
 }

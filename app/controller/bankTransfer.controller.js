@@ -1,6 +1,7 @@
 const BankTransfer = require('../models/bankTransfer'),
     Investment = require('../models/investment'),
-    User = require('../models/user')
+    User = require('../models/user'),
+    PopularInvestment = require('../models/popularInvestment')
 
 exports.bankTransfer_create = (req, res) => {
     Investment.findById(req.params.id).then(investment => {
@@ -79,7 +80,7 @@ exports.bankTransfer_create = (req, res) => {
 exports.bankTransfer_show = (req, res) => {
     BankTransfer.findById(req.params.id).populate('user').exec((err, bankTransfer) => {
         if (bankTransfer) {
-            res.status(400).json({
+            res.status(200).json({
                 message: 'bank transfer retrieved',
                 success: true,
                 data: bankTransfer
@@ -95,20 +96,30 @@ exports.bankTransfer_show = (req, res) => {
 }
 
 exports.bankTransfer_pay = (req, res) => {
-    BankTransfer.findById(req.params.id).then((bankTransfer) => {
+    BankTransfer.findById(req.params.id).populate('investment').exec((bankTransfer) => {
         bankTransfer.isPaid = true
-        bankTransfer.save().then(paid=>{
+        bankTransfer.investment.popularity = bankTransfer.user.popularity + 1
+        bankTransfer.save().then(savedTrf=>{
             res.status(400).json({
-                message: 'bank transfer paid',
+                message: 'transfer verified',
                 success: true,
-                data: paid
+                data: savedTrf
+            })
+        }).catch(errSav=>{
+            res.status(400).json({
+                message: 'fail to verify transfer',
+                success: false,
+                data: errSav
+            })
+        }).then(()=>{
+            Investment.find({}).limit(3).sort('-popularity').exec((errInv, popularInvestment)=>{
+                if(errInv){
+                    console.log('fail to find top investment')
+                }else{
+                    console.log(popularInvestment)
+                }
             })
         })
-    }).catch(err => {
-        res.status(400).json({
-            message: 'bank transfer unavailable',
-            success: false,
-            data: err
-        })
+
     })
 }

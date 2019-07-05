@@ -139,3 +139,20 @@ exports.investment_delete = (req,res)=>{
         }
     })
 }
+exports.investment_terbaru = (req,res)=>{
+    Investment.find({}).limit(3).sort({date:-1}).exec((err,investmentsTerbaru)=>{
+        if(err){
+            res.status(400).json({
+                message:'fail to sort investments',
+                success:false,
+                data:err
+            })
+        }else{
+            res.status(200).json({
+                message: 'investments terbaru retrieved',
+                success:false,
+                data: investmentsTerbaru
+            })
+        }
+    })
+}

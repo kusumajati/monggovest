@@ -7,8 +7,10 @@ var bankTransferSchema = new mongoose.Schema({
     noRek: {type:String, required:true, minlength:6},
     jumlahTransfer:{type:Number},
     investment:{type:mongoose.Schema.Types.ObjectId, ref:'Investment'},
-    isPaid:{type:Boolean, default:false}
-})
+    isPaid:{type:Boolean, default:false},
+    verifiedAt:{type:Date}
+},
+{ timestamps: { createdAt: 'created_at' } })
 const bankTransferModel = mongoose.model('BankTransfer', bankTransferSchema)
 
 module.exports = bankTransferModel

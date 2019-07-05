@@ -9,15 +9,17 @@ var investmentSchema = new mongoose.Schema({
     slot:{type:Number,default:0},
     nilaiInvestasi:{type:Number, min:[1000000,'Nilai investasi harus bernilai lebih dari Rp 1.000.000,-'] ,required:true},
     terInvest:{type:Number, default:0},
-    gambar:[{type:String}],
+    gambar:[{type:String, required:true}],
     bankTransfers:[{type:mongoose.Schema.Types.ObjectId, ref:'BankTransfer'}],
     returnLow:{type:Number, required:true},
     returnHigh:{type:Number, required:true},
     periodeBagiHasil:{type:Number, required:true},
     rincian:{type:String},
     ringkasan:{type:String},
-    hargaLot:{type:Number, default:0}
-})
+    hargaLot:{type:Number, default:0},
+    popularity:{type:Number, default:0}
+},
+{ timestamps: { createdAt: 'created_at' } })
 
 const investmentModel = mongoose.model('Investment', investmentSchema)
 

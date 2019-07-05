@@ -15,10 +15,9 @@ var userSchema = new mongoose.Schema({
     provinsi:{type:String},
     telepon: {type:String},
     incomeLow:{type:Number},
-    incomeHigh:{type:Number},
-        
-    
-})
+    incomeHigh:{type:Number}   
+},
+{ timestamps: { createdAt: 'created_at' } })
 const userModel = mongoose.model('User', userSchema)
 
 module.exports = userModel
