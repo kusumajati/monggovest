@@ -4,8 +4,9 @@ const   express     = require('express'),
         bodyParser  = require('body-parser'),
         mongoose    = require('mongoose'),
         port        = process.env.PORT || 5000,
-        dbConfig    = require('./config/db')
-
+        dbConfig    = require('./config/db'),
+        cors        = require('cors')
+app.use(cors())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json())
 
