@@ -156,3 +156,4 @@ exports.investment_terbaru = (req,res)=>{
         }
     })
 }
+

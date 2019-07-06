@@ -1,11 +1,10 @@
 const BankTransfer = require('../models/bankTransfer'),
     Investment = require('../models/investment'),
-    User = require('../models/user'),
-    PopularInvestment = require('../models/popularInvestment')
+    User = require('../models/user')
 
 exports.bankTransfer_create = (req, res) => {
     Investment.findById(req.params.id).then(investment => {
-        User.findById(req.decoded._id).then(user => {
+        User.findById(req.decoded.id).then(user => {
             //update user biodata
             user.noIdentitas = req.body.noIdentitas
             user.alamat = req.body.alamat
@@ -27,11 +26,11 @@ exports.bankTransfer_create = (req, res) => {
                     bankTransfer.investment = investment
                     bankTransfer.save().then(newTransfer => {
                         user.bankTransfers.push(newTransfer)
-                        user.save().then(() => {
+                        user.save().then((userSav) => {
                             res.status(200).json({
                                 message: 'new bank transfer is created',
                                 success: true,
-                                data: newTransfer
+                                data: userSav
                             })
                         }).catch(err => {
                             res.status(400).json({
@@ -62,6 +61,7 @@ exports.bankTransfer_create = (req, res) => {
                 })
             }
         }).catch(err_user => {
+            console.log(user)
             res.status(400).json({
                 message: 'user error',
                 success: false,
@@ -111,15 +111,6 @@ exports.bankTransfer_pay = (req, res) => {
                 success: false,
                 data: errSav
             })
-        }).then(()=>{
-            Investment.find({}).limit(3).sort('-popularity').exec((errInv, popularInvestment)=>{
-                if(errInv){
-                    console.log('fail to find top investment')
-                }else{
-                    console.log(popularInvestment)
-                }
-            })
         })
-
     })
 }

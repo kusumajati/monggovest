@@ -74,7 +74,7 @@ exports.user_login = (req, res) => {
                
                     const token = jwt.sign(JSON.stringify(createToken), process.env.JWT_KEY, { algorithm: 'HS256' })
                     res.status(200).json({
-                        message: 'you are logged in',
+                        message: `you are logged in as ${user.namaLengkap}`,
                         success: true,
                         token: token
                     })
@@ -139,7 +139,7 @@ exports.user_update = (req, res)=>{
                 provinsi: req.body.provinsi,
                 telepon: req.body.telepon,
                 incomeLow: req.body.incomeLow,
-                incomeHigh: req.body.incomeHigh
+                incomeHigh: req.body.incomeHigh,
     }}).then(updatedUser=>{
         res.status(200).json({
             message:"user updated",
