@@ -97,7 +97,7 @@ exports.user_login = (req, res) => {
 }
 
 exports.user_show = (req, res) => {
-    User.findOne({ _id: req.decoded.id }, (err, user) => {
+    User.findById(req.params.id, (err, user) => {
         if (err) {
             res.status(400).json({
                 message: 'error',

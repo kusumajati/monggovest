@@ -27,6 +27,7 @@ exports.bankTransfer_create = (req, res) => {
                     bankTransfer.save().then(newTransfer => {
                         user.bankTransfers.push(newTransfer)
                         user.save().then((userSav) => {
+                            console.log(newTransfer)
                             res.status(200).json({
                                 message: 'new bank transfer is created',
                                 success: true,

@@ -53,13 +53,13 @@ exports.investment_create = (req, res) => {
 
 exports.investment_show = (req, res) => {
     Investment.findById(req.params.id).then(investment => {
-        res.status(400).json({
+        res.status(200).json({
             message: `${investment.nama} is retrieved`,
             success: true,
             data: investment
         })
     }).catch(err => {
-        res.status(200).json({
+        res.status(400).json({
             message: 'fail to get investment',
             success: false,
             data: err
