@@ -76,7 +76,8 @@ exports.user_login = (req, res) => {
                     res.status(200).json({
                         message: `you are logged in as ${user.namaLengkap}`,
                         success: true,
-                        token: token
+                        token: token,
+                        data: user
                     })
                 } else {
                     res.status(400).json({
