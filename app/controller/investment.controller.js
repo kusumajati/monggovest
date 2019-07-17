@@ -52,8 +52,8 @@ exports.investment_create = (req, res) => {
 }
 
 exports.investment_show = (req, res) => {
-    Investment.findById(req.params.id).exec((err,investment) => {
-
+    Investment.findById(req.params.id).populate('author').exec((err,investment) => {
+        console.log('ini nama author', investment.author.namaLengkap)
         if(err){
             res.status(400).json({
                 message: 'fail to get investment',
