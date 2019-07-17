@@ -52,18 +52,22 @@ exports.investment_create = (req, res) => {
 }
 
 exports.investment_show = (req, res) => {
-    Investment.findById(req.params.id).then(investment => {
-        res.status(200).json({
-            message: `${investment.nama} is retrieved`,
-            success: true,
-            data: investment
-        })
-    }).catch(err => {
-        res.status(400).json({
-            message: 'fail to get investment',
-            success: false,
-            data: err
-        })
+    Investment.findById(req.params.id).populate('author').exec((err,investment) => {
+        console.log('ini nama author', investment.author.namaLengkap)
+        if(err){
+            res.status(400).json({
+                message: 'fail to get investment',
+                success: false,
+                data: err
+            })
+        }else{
+            res.status(200).json({
+                message: `investment is retrieved`,
+                success: true,
+                data: investment
+            })
+            
+        }
     })
 }
 
@@ -79,7 +83,7 @@ exports.allinvestment = (req, res) => {
 
 exports.investment_update = (req, res) => {
     User.findById(req.decoded.id).then(user=>{
-        Investment.findById(req.params.id).populate().exec((invErr, investment)=>{
+        Investment.findById(req.params.id).exec((invErr, investment)=>{
             if(invErr){
                 res.status(400).json({
                     message: 'fail to find user',
