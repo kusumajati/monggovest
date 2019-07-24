@@ -24,6 +24,9 @@ exports.create_user = (req, res) => {
                 incomeLow: 0,
                 incomeHigh: 0
             }).then(newUser=>{
+                if(newUser.email.includes('@admin')){
+                    newUser.isAdmin = true
+                }
                 newUser.save().then(savedUser=>{
                     res.status(200).json({
                         message:'new user created',
@@ -69,7 +72,8 @@ exports.user_login = (req, res) => {
                     const createToken = {
                         id: user.id,
                         email: user.email,
-                        password: user.password
+                        password: user.password,
+                        isAdmin: user.isAdmin
                     }
                
                     const token = jwt.sign(JSON.stringify(createToken), process.env.JWT_KEY, { algorithm: 'HS256' })

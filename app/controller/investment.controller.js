@@ -18,6 +18,7 @@ exports.investment_create = (req, res) => {
                 if (newInvestment) {
                     newInvestment.hargaLot = newInvestment.nilaiInvestasi / newInvestment.jumlahSlot
                     newInvestment.author = user
+
                     newInvestment.save((err, savedInvestment) => {
                         if (savedInvestment) {
                             res.status(200).json({
@@ -161,3 +162,6 @@ exports.investment_terbaru = (req,res)=>{
     })
 }
 
+exports.investment_verify = (req, res)=>{
+    Investment.findById()
+}

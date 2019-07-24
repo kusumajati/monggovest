@@ -17,7 +17,8 @@ var investmentSchema = new mongoose.Schema({
     rincian:{type:String},
     ringkasan:{type:String},
     hargaLot:{type:Number, default:0},
-    popularity:{type:Number, default:0}
+    popularity:{type:Number, default:0},
+    isVerified:{type:Boolean, default:false}
 },
 { timestamps: { createdAt: 'created_at' } })
 
