@@ -19,6 +19,7 @@ exports.investment_create = (req, res) => {
                     newInvestment.hargaLot = newInvestment.nilaiInvestasi / newInvestment.jumlahSlot
                     newInvestment.author = user
 
+
                     newInvestment.save((err, savedInvestment) => {
                         if (savedInvestment) {
                             res.status(200).json({
@@ -73,7 +74,7 @@ exports.investment_show = (req, res) => {
 }
 
 exports.allinvestment = (req, res) => {
-    Investment.find({}).then(result => {
+    Investment.find({}).populate('author').then(result => {
         res.status(200).json({
             message: 'all investment',
             success: true,
