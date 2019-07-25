@@ -9,7 +9,10 @@ const   express     = require('express'),
 app.use(cors())
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json())
-
+app.use(function(req, res, next){
+    res.header("Access-Control-Allow-Origin","*")
+    res.header("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept, Authorization")
+})
 mongoose.Promise = global.Promise
 mongoose.connect(process.env.MONGODB_URI||dbConfig.mlab, {useNewUrlParser:true}).then(()=>{
     console.log('you are connected to the database')
