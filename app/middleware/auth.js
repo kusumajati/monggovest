@@ -22,3 +22,13 @@ exports.auth = (req,res,next)=>{
         })
     }
 }
+exports.admin_auth = (req,res, next)=>{
+    if(req.decoded.isAdmin){
+        next()
+    }else{
+        res.status(400).json({
+            success:false,
+            message: "fail to verify as Admin"
+        })
+    }
+}

@@ -164,5 +164,30 @@ exports.investment_terbaru = (req,res)=>{
 }
 
 exports.investment_verify = (req, res)=>{
-    Investment.findById()
+
+    Investment.findById(req.params.id, (err,validated)=>{
+        if(err){
+            res.status(400).json({
+                message:'fail to validate investment',
+                success:false,
+                data:err
+            })
+        }else{
+            validated.isVerified = true
+            validated.save().then(saveValidated=>{
+                res.status(200).json({
+                    message:'investment is validated',
+                    success:true,
+                    data:saveValidated
+                })
+            }).catch(err2=>{
+                res.status(400).json({
+                    message:'fail to validate investment',
+                    success:false,
+                    data:err2
+                })
+            })
+
+        }
+    })
 }
