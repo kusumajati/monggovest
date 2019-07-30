@@ -8,7 +8,8 @@ var bankTransferSchema = new mongoose.Schema({
     jumlahTransfer:{type:Number},
     investment:{type:mongoose.Schema.Types.ObjectId, ref:'Investment'},
     isPaid:{type:Boolean, default:false},
-    verifiedAt:{type:Date}
+    verifiedAt:{type:Date},
+    namaBank:{type:String}
 },
 { timestamps: { createdAt: 'created_at' } })
 const bankTransferModel = mongoose.model('BankTransfer', bankTransferSchema)

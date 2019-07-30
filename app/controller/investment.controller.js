@@ -17,6 +17,7 @@ exports.investment_create = (req, res) => {
             }, (err, newInvestment) => {
                 if (newInvestment) {
                     newInvestment.hargaLot = newInvestment.nilaiInvestasi / newInvestment.jumlahSlot
+                    newInvestment.slot = newInvestment.jumlahSlot
                     newInvestment.author = user
 
 
@@ -55,7 +56,6 @@ exports.investment_create = (req, res) => {
 
 exports.investment_show = (req, res) => {
     Investment.findById(req.params.id).populate('author').exec((err,investment) => {
-        console.log('ini nama author', investment.author.namaLengkap)
         if(err){
             res.status(400).json({
                 message: 'fail to get investment',
@@ -146,7 +146,7 @@ exports.investment_delete = (req,res)=>{
     })
 }
 exports.investment_terbaru = (req,res)=>{
-    Investment.find({}).limit(3).sort({date:-1}).exec((err,investmentsTerbaru)=>{
+    Investment.find({isVerified:true}).limit(6).sort({date:-1}).exec((err,investmentsTerbaru)=>{
         if(err){
             res.status(400).json({
                 message:'fail to sort investments',

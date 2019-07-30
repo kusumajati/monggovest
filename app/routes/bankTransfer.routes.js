@@ -1,7 +1,7 @@
 module.exports = (app) =>{
     const   bankTransfer    = require('../controller/bankTransfer.controller'),
             auth            = require('../middleware/auth')
-    app.post('/v1/api/bank_transfer/:id', auth.auth, bankTransfer.bankTransfer_create)
+    app.post('/v1/api/bank_transfer/', auth.auth, bankTransfer.bankTransfer_create)
     app.get('/v1/api/bank_transfer/:id', auth.auth, bankTransfer.bankTransfer_show)
-    app.get('/v1/api/bank_transfer/:id/paid', bankTransfer.bankTransfer_pay)
+    app.get('/v1/api/bank_transfer/:id/paid', auth.auth, bankTransfer.bankTransfer_pay)
 }
