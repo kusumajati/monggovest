@@ -3,7 +3,7 @@ const mongoose  = require('mongoose')
 
 var investmentSchema = new mongoose.Schema({
     nama:{type:String,minlength:4,required:true},
-    users:[{type: mongoose.Schema.Types.ObjectId, ref:'User'}],
+    investors:[{user:{type: mongoose.Schema.Types.ObjectId, ref:'User'},slot:{type:Number}}],
     author:{type: mongoose.Schema.Types.ObjectId, ref:'User'},
     jumlahSlot:{type:Number,min:1,max:100},
     slot:{type:Number,default:0},

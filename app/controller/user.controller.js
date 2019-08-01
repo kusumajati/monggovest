@@ -116,20 +116,18 @@ exports.user_login = (req, res) => {
 }
 
 exports.user_show = (req, res) => {
-    User.findById(req.params.id, (err, user) => {
-        if (err) {
-            res.status(400).json({
-                message: 'error',
-                success: false,
-                data: err
-            })
-        } else {
-            res.status(200).json({
-                message: 'user retrieved',
-                success: true,
-                data: user
-            })
-        }
+    User.findById(req.params.id).populate('authoredInvestments').populate({path:'bankTransfers',populate:{path:'investment'}}).populate('portfolio').then(user=>{
+        res.status(200).json({
+            message: 'user retrieved',
+            success: true,
+            data: user
+        })
+    }).catch(err=>{
+        res.status(400).json({
+            message: 'error',
+            success: false,
+            data: err
+        })
     })
 }
 

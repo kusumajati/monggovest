@@ -6,6 +6,7 @@ var bankTransferSchema = new mongoose.Schema({
     pemilikAkun:{type:String, required:true, minlength:4},
     noRek: {type:String, required:true, minlength:6},
     jumlahTransfer:{type:Number},
+    slot:{type:Number},
     investment:{type:mongoose.Schema.Types.ObjectId, ref:'Investment'},
     isPaid:{type:Boolean, default:false},
     verifiedAt:{type:Date},

@@ -19,22 +19,24 @@ exports.investment_create = (req, res) => {
                     newInvestment.hargaLot = newInvestment.nilaiInvestasi / newInvestment.jumlahSlot
                     newInvestment.slot = newInvestment.jumlahSlot
                     newInvestment.author = user
-
-
-                    newInvestment.save((err, savedInvestment) => {
-                        if (savedInvestment) {
-                            res.status(200).json({
-                                message: `${savedInvestment.nama} is a new investment`,
-                                success: true,
-                                data: savedInvestment
-                            })
-                        } else {
-                            res.status(400).json({
-                                message: 'fail to create investment',
-                                success: false,
-                                data: err
-                            })
-                        }
+                    user.authoredInvestments.push(newInvestment)
+                    user.save().then((savuser)=>{
+                        newInvestment.save((err, savedInvestment) => {
+                            if (savedInvestment) {
+                                res.status(200).json({
+                                    message: `${savedInvestment.nama} is a new investment`,
+                                    success: true,
+                                    data: savedInvestment,
+                                    user: savuser
+                                })
+                            } else {
+                                res.status(400).json({
+                                    message: 'fail to create investment',
+                                    success: false,
+                                    data: err
+                                })
+                            }
+                        })
                     })
                 } else {
                     res.status(400).json({
