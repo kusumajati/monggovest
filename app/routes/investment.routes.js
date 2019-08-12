@@ -9,4 +9,5 @@ module.exports = app =>{
     app.get('/v1/api/investment_terbaru', investment.investment_terbaru)
     app.get('/v1/api/investment/:id/verify', auth.auth, auth.admin_auth, investment.investment_verify)
     app.delete('/v1/api/investment/:id', auth.auth, auth.admin_auth, investment.investment_delete)
+    app.get('/v1/api/unverifiedInvestments', investment.unVerifiedInvestment)
 }

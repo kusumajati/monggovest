@@ -2,58 +2,37 @@ const Investment = require('../models/investment'),
     User = require('../models/user')
 
 exports.investment_create = (req, res) => {
-    User.findOne({ _id: req.decoded.id }, (err, user) => {
-        if (user) {
-            Investment.create({
-                nama: req.body.nama,
-                nilaiInvestasi: req.body.nilaiInvestasi,
-                jumlahSlot: req.body.jumlahSlot,
-                gambar: req.body.gambar,
-                returnLow: req.body.returnLow,
-                returnHigh: req.body.returnHigh,
-                periodeBagiHasil: req.body.periodeBagiHasil,
-                rincian: req.body.rincian,
-                ringkasan: req.body.ringkasan
-            }, (err, newInvestment) => {
-                if (newInvestment) {
-                    newInvestment.hargaLot = newInvestment.nilaiInvestasi / newInvestment.jumlahSlot
-                    newInvestment.slot = newInvestment.jumlahSlot
-                    newInvestment.author = user
-                    user.authoredInvestments.push(newInvestment)
-                    user.save().then((savuser)=>{
-                        newInvestment.save((err, savedInvestment) => {
-                            if (savedInvestment) {
-                                res.status(200).json({
-                                    message: `${savedInvestment.nama} is a new investment`,
-                                    success: true,
-                                    data: savedInvestment,
-                                    user: savuser
-                                })
-                            } else {
-                                res.status(400).json({
-                                    message: 'fail to create investment',
-                                    success: false,
-                                    data: err
-                                })
-                            }
-                        })
-                    })
-                } else {
-                    res.status(400).json({
-                        message: 'fail to create investment',
-                        success: false,
-                        data: err
-                    })
-                }
+    Investment.create({
+        nama: req.body.nama,
+        nilaiInvestasi: req.body.nilaiInvestasi,
+        jumlahSlot: req.body.jumlahSlot,
+        gambar: req.body.gambar,
+        returnLow: req.body.returnLow,
+        returnHigh: req.body.returnHigh,
+        periodeBagiHasil: req.body.periodeBagiHasil,
+        periodeKontrak: req.body.periodeKontrak,
+        rincian: req.body.rincian,
+    }, (err, newInvestment) => {
+        // if (err) {
+        //     res.status(400).json({
+        //         message: 'fail to create investment',
+        //         success: false,
+        //         data: err
+        //     })
+        // } else {
+            newInvestment.hargaLot = newInvestment.nilaiInvestasi / newInvestment.jumlahSlot
+            newInvestment.slot = newInvestment.jumlahSlot
+            newInvestment.author = req.body.userId
+            newInvestment.save().then(saved=>{
+                res.status(200).json({
+                    message: 'success to create investment',
+                    success: true,
+                    data: saved
+                })
             })
-        } else {
-            res.status(400).json({
-                message: 'fail to get user',
-                success: false,
-                data: err
-            })
-        }
+        // }
     })
+
 }
 
 exports.investment_show = (req, res) => {
@@ -100,7 +79,7 @@ exports.investment_update = (req, res) => {
                 investment.gambar= req.body.gambar
                 investment.returnLow= req.body.returnLow
                 investment.returnHigh= req.body.returnHigh
-                investment.periodeBagiHasil= req.body.periodeBagiHasil
+                investment.periodeBagiHasil= req.body.periodeBagiHasil,
                 investment.rincian= req.body.rincian
                 investment.ringkasan= req.body.ringkasan      
                 investment.save().then(invSav=>{
@@ -190,6 +169,24 @@ exports.investment_verify = (req, res)=>{
                 })
             })
 
+        }
+    })
+}
+
+exports.unVerifiedInvestment = (req, res)=>{
+    Investment.find({ isVerified: false }).populate('author').exec((err, investments) => {
+        if(err){
+            res.status(400).json({
+                message: 'error',
+                success: true,
+                data: err
+            })
+        }else{
+            res.status(200).json({
+                message: 'investment retrieved',
+                success: true,
+                data: investments
+            })
         }
     })
 }

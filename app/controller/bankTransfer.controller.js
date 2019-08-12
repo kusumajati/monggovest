@@ -4,54 +4,31 @@ const BankTransfer = require('../models/bankTransfer'),
 Portfolio = require('../models/portfolio')
 
 exports.bankTransfer_create = (req, res) => {
-    Investment.findById(req.params.idInvestment).then(investment => {
-        User.findById(req.decoded.id).then(user => {
-            // console.log(user, 'ini user')
-            if (investment.slot > 0) {
-                BankTransfer.create({
-                    pemilikAkun: req.body.pemilikAkun,
-                    noRek: req.body.noRek,
-                    namaBank: req.body.namaBank
-                }).then(bankTransfer => {
-                    bankTransfer.jumlahTransfer = req.body.tambahSlot * investment.hargaLot
-                    bankTransfer.user = user
-                    bankTransfer.investment = investment
-                    bankTransfer.slot = req.body.tambahSlot
+    console.log(req.body.tambahSlot, 'ini tambahSlot req')
+    BankTransfer.create({
+        pemilikAkun: req.body.pemilikAkun,
+        noRek: req.body.noRek,
+        tambahSlot: req.body.tambahSlot,
+        user : req.body.userId,
+        investment: req.body.investmentId,
+        jumlahTransfer : req.body.tambahSlot * req.body.hargaLot,
+        slot : req.body.tambahSlot
 
-                    bankTransfer.save().then(newTransfer => {
-                        user.bankTransfers.push(newTransfer)
-                        user.save().then(userSav => {
-                            investment.bankTransfers.push(newTransfer)
-                            investment.slot = investment.slot - newTransfer.slot
-                            investment.save().then(invSav => {
-                                res.status(200).json({
-                                    message: 'bank transfer created',
-                                    success: true,
-                                    dataBankTrfansfer: newTransfer,
-                                    dataInv: invSav,
-                                    dataUser: userSav
-                                })
-                            })
-                        })
-                    })
-                })
 
-            } else {
-                res.status(400).json({
-                    message: 'slot sudah habis',
-                    success: false,
-                    data: investment.slot
-                })
-            }
-        })
-    }).catch(err => {
-        console.log(err)
-        res.status(400).json({
-            message: 'slot sudah habis',
-            success: false,
-            data: investment.slot
+    }).then(bankTransfer=>{
+        res.status(200).json({
+            message: 'bank transfers retrieved',
+            success: true,
+            data: bankTransfer
         })
     })
+    // .catch(err=>{
+    //     res.status(400).json({
+    //         message: 'bank transfers retrieved',
+    //         success: false,
+    //         data: err
+    //     })
+    // })
 }
 
 exports.bankTransfer_allNotPaid = (req, res) => {
@@ -87,7 +64,6 @@ exports.bankTransfer_pay = (req, res) => {
         bankTransfer.isPaid = true
         bankTransfer.investment.popularity = bankTransfer.user.popularity + 1
         bankTransfer.save().then(savedTrf => {
-            console.log(savedTrf.investment, savedTrf.user)
             Portfolio.findOne({ investment: savedTrf.investment, user: savedTrf.user }).then((portfolio) => {
                 console.log(portfolio)
                 if (portfolio) {

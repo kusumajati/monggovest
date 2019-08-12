@@ -148,17 +148,23 @@ exports.alluser = (req, res) => {
 }
 
 exports.user_update = (req, res) => {
+    console.log(req.body.invId)
     User.findById(req.decoded.id).then(user => {
-        console.log(req.body.tanggalLahir)
-        if (req.body.tanggalLahir !== null) { user.tanggalLahir = req.body.tanggalLahir }
-        if (req.body.namaLengkap !== null) { user.namaLengkap = req.body.namaLengkap }
-        if (req.body.jenisIdentitas !== null) { user.jenisIdentitas = req.body.jenisIdentitas }
-        if (req.body.noIdentitas !== null) { user.noIdentitas = req.body.noIdentitas }
-        if (req.body.alamat !== null) { user.alamat = req.body.alamat }
-        if (req.body.telepon !== null) { user.telepon = req.body.telepon }
-        if (req.body.jumlahPenghasilan !== null) { user.jumlahPenghasilan = req.body.jumlahPenghasilan }
-        if (req.body.sumberPenghasilan !== null) { user.sumberPenghasilan = req.body.sumberPenghasilan }
-        if(req.body.profilePicture !== null){user.profilePicture = req.body.profilePicture}
+        if (req.body.tanggalLahir) { user.tanggalLahir = req.body.tanggalLahir }
+        if (req.body.namaLengkap) { user.namaLengkap = req.body.namaLengkap }
+        if (req.body.jenisIdentitas) { user.jenisIdentitas = req.body.jenisIdentitas }
+        if (req.body.noIdentitas) { user.noIdentitas = req.body.noIdentitas }
+        if (req.body.alamat) { user.alamat = req.body.alamat }
+        if (req.body.telepon) { user.telepon = req.body.telepon }
+        if (req.body.jumlahPenghasilan) { user.jumlahPenghasilan = req.body.jumlahPenghasilan }
+        if (req.body.sumberPenghasilan) { user.sumberPenghasilan = req.body.sumberPenghasilan }
+        if(req.body.profilePicture){user.profilePicture = req.body.profilePicture}
+        if(req.body.invId){
+            user.authoredInvestments.push(req.body.invId)
+        }
+        if(req.body.bankTransferId){
+            user.bankTransfers.push(req.body.bankTransferId)
+        }
         user.save().then(updatedUser => {
             res.status(200).json({
                 message: "user updated",
@@ -173,6 +179,7 @@ exports.user_update = (req, res) => {
             })
 
         })
+
     }).catch(err1=>{
         res.status(400).json({
             message: 'fail to find and update',
