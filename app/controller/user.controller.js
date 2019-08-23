@@ -53,7 +53,7 @@ exports.create_user = (req, res) => {
                 res.status(200).json({
                     message: 'new user created',
                     success: true,
-                    data: savedUser,
+                    data: newUser,
                     token: token
                 })
 
