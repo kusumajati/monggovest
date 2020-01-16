@@ -16,14 +16,15 @@ const bcrypt = require('bcrypt'),
         to: 'nino.bmakj@gmail.com', // list of receivers
         subject: 'Hello from node app', // Subject line
         text: 'Hello world?', // plain text body
+        html:"<b>Hello world????</b>"
     };
-    // transporter.sendMail(info, (err, sentMail)=>{
-    //     if(err){
-    //         console.log(err)
-    //     }else{
-    //         console.log('Email sent: '+sentMail.response)
-    //     }
-    // })
+    transporter.sendMail(info, (err, sentMail)=>{
+        if(err){
+            console.log(err)
+        }else{
+            console.log('Email sent: '+sentMail.response)
+        }
+    })
 
 exports.create_user = (req, res) => {
     User.findOne({ email: req.body.email }).then(user => {
@@ -48,8 +49,11 @@ exports.create_user = (req, res) => {
                     password: newUser.password,
                     isAdmin: newUser.isAdmin
                 }
+                const emailToken={
+                    id: newUser.id
+                }
                 const token = jwt.sign(JSON.stringify(createToken), process.env.JWT_KEY, { algorithm: 'HS256' })
-            
+                
                 res.status(200).json({
                     message: 'new user created',
                     success: true,
@@ -165,7 +169,9 @@ exports.alluser = (req, res) => {
 
 exports.user_update = (req, res) => {
     let params = {};
-    for (let prop in req.body) if (req.body[prop]) params[prop] = req.body[prop];
+    for (let prop in req.body) 
+    if (req.body[prop]) 
+    params[prop] = req.body[prop];
 
     User.findByIdAndUpdate(req.decoded.id, params).then(user => {
 
